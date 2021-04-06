@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiteDB.Demo", "LiteDB\LiteD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LiteDB.WebAssembly", "LiteDB\LiteDB.WebAssembly\LiteDB.WebAssembly.csproj", "{34146CD8-1805-4A39-A7EC-47DB62F7DF56}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndexedDB-Demo", "IndexedDB\IndexedDB-Demo\IndexedDB-Demo.csproj", "{25C9268B-24F4-4ADB-BFAC-499C8F99A69C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{34146CD8-1805-4A39-A7EC-47DB62F7DF56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34146CD8-1805-4A39-A7EC-47DB62F7DF56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34146CD8-1805-4A39-A7EC-47DB62F7DF56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25C9268B-24F4-4ADB-BFAC-499C8F99A69C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25C9268B-24F4-4ADB-BFAC-499C8F99A69C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25C9268B-24F4-4ADB-BFAC-499C8F99A69C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25C9268B-24F4-4ADB-BFAC-499C8F99A69C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{B6121F40-2070-43D9-99AA-FDCA5807B66B} = {428EDFFB-4E9A-47C5-A103-C153BAFA739B}
 		{34146CD8-1805-4A39-A7EC-47DB62F7DF56} = {428EDFFB-4E9A-47C5-A103-C153BAFA739B}
+		{25C9268B-24F4-4ADB-BFAC-499C8F99A69C} = {56C05C92-D973-4EB9-AF74-99F554E785D3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E3AD439-B1F1-49F0-A9C4-DF5EA7566E57}

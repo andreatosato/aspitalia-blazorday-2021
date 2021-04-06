@@ -8,7 +8,14 @@ using System.Threading.Tasks;
 
 namespace IndexedDB_Demo.Services
 {
-    public class StorageService
+    public interface IStorageService
+    {
+        Task CreateNewWeatherAsync();
+        Task DeleteAsync(Guid id);
+        Task<List<WeatherForecast>> GetWeathersAsync();
+    }
+
+    public class StorageService : IStorageService
     {
         private Lazy<Task<DbContext>> lazyDb;
 
@@ -17,35 +24,58 @@ namespace IndexedDB_Demo.Services
             lazyDb = new Lazy<Task<DbContext>>(async () => await dbFactory.Create<DbContext>());
         }
 
-        public async Task Create()
+        public async Task CreateNewWeatherAsync()
         {
+            await CheckCityAsync();
             using var db = await lazyDb.Value;
             {
+                var randNum = new Random().Next(-35, 35);
+                var randCity = new Random().Next(0, 6);
+                var newW = new WeatherForecast()
+                {
+                    Date = DateTime.Now.AddDays(-new Random().Next(1, 50000)),
+                    Summary = db.Cities.ToList()[randCity].Name,
+                    TemperatureC = randNum
+                };
 
+                db.WeatherForecasts.Add(newW);
+                await db.SaveChanges();
             }
         }
 
-        public async Task CreateNewWeatherAsync()
+        private async Task CheckCityAsync()
         {
-            var randNum = new Random().Next(-35, 35);
-            var randCity = new Random().Next(0, 6);
-            var newW = new WeatherForecast()
+            using var db = await lazyDb.Value;
             {
-                Date = DateTime.Now.AddDays(-new Random().Next(1, 50000)),
-                Summary = cities[randCity],
-                TemperatureC = randNum
-            };
-
-            await _weatherCollection.InsertAsync(newW);
-            forecasts = await _weatherCollection.Query().ToListAsync();
-            StateHasChanged();
+                if (!db.Cities.Any())
+                {
+                    db.Cities.Add(new City { Name = "Madrid" });
+                    db.Cities.Add(new City { Name = "Rome" });
+                    db.Cities.Add(new City { Name = "Verona" });
+                    db.Cities.Add(new City { Name = "Barcelona" });
+                    db.Cities.Add(new City { Name = "Valencia" });
+                    db.Cities.Add(new City { Name = "Napoli" });
+                    await db.SaveChanges();
+                }
+            }
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            await _weatherCollection.DeleteAsync(new BsonValue(id));
-            forecasts = await _weatherCollection.Query().ToListAsync();
-            StateHasChanged();
+            using var db = await lazyDb.Value;
+            {
+                var elementToRemove = db.WeatherForecasts.FirstOrDefault(t => t.Id == id);
+                db.WeatherForecasts.Remove(elementToRemove);
+                await db.SaveChanges();
+            }
+        }
+
+        public async Task<List<WeatherForecast>> GetWeathersAsync()
+        {
+            using var db = await lazyDb.Value;
+            {
+                return db.WeatherForecasts.ToList();
+            }
         }
     }
 
@@ -54,12 +84,6 @@ namespace IndexedDB_Demo.Services
         public DbContext(IJSRuntime jSRuntime, string name, int version)
         : base(jSRuntime, name, version)
         {
-            Cities.Add(new City { Name = "Madrid" });
-            Cities.Add(new City { Name = "Rome" });
-            Cities.Add(new City { Name = "Verona" });
-            Cities.Add(new City { Name = "Barcelona" });
-            Cities.Add(new City { Name = "Valencia" });
-            Cities.Add(new City { Name = "Napoli" });
         }
 
         public IndexedSet<WeatherForecast> WeatherForecasts { get; set; }

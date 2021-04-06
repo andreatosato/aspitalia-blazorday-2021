@@ -1,0 +1,42 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using static LiteDB.Constants;
+
+namespace LiteDB.Engine
+{
+    /// <summary>
+    /// Execute an "index scan" passing a Func as where
+    /// </summary>
+    internal class IndexScan : Index
+    {
+        private Func<BsonValue, bool> _func;
+
+        public IndexScan(string name, Func<BsonValue, bool> func, int order)
+            : base(name, order)
+        {
+            _func = func;
+        }
+
+        public override uint GetCost(CollectionIndex index)
+        {
+            return 80;
+        }
+
+        public override async IAsyncEnumerable<IndexNode> Execute(IndexService indexer, CollectionIndex index)
+        {
+            await foreach(var node in indexer.FindAll(index, this.Order))
+            {
+                if (_func(node.Key))
+                {
+                    yield return node;
+                }
+            }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("FULL INDEX SCAN({0})", this.Name);
+        }
+    }
+}
